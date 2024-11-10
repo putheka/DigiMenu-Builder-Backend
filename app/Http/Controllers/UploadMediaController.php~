@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Exception;
+
+class UploadMediaController extends Controller
+{
+    public function __invoke(Request $request)
+    {
+        try {
+            // Store the file with public visibility
+            $path = $request->file('file')->store('public/images');
+
+            return response()->json([
+                'path' => Storage::url($path), // Get the accessible URL
+                'msg' => 'Upload successful',
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'msg' => 'Upload failed: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+}
